@@ -1,0 +1,1 @@
+from kdevlcsnapper import main

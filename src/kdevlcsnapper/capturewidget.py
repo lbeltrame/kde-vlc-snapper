@@ -19,9 +19,18 @@
 
 import time
 
-from numpy import linspace
+try:
+    from numpy import linspace
+except ImportError:
+    def linspace(start, stop, num=50):
+        L = [0.0] * num
+        nm1 = num - 1
+        nm1inv = 1.0 / nm1
+        for i in range(num):
+            L[i] = nm1inv * (start*(nm1 - i) + stop*i)
+        return L
+
 import PyQt4.QtGui as QtGui
-import PyKDE4.kdecore as kdecore
 import PyKDE4.kdeui as kdeui
 from PyKDE4.kio import KFile
 

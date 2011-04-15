@@ -49,6 +49,6 @@ def main():
     dialog = capturewidget.CaptureDialog()
     dialog.show()
 
-    app.lastWindowClosed.connect (app.quit)
+    app.lastWindowClosed.connect (dialog.deleteLater)
     app.exec_()
 

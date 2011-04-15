@@ -27,7 +27,7 @@ except ImportError:
         nm1 = num - 1
         nm1inv = 1.0 / nm1
         for i in range(num):
-            L[i] = nm1inv * (start*(nm1 - i) + stop*i)
+            L[i] = nm1inv * (start * (nm1 - i) + stop * i)
         return L
 
 import PyQt4.QtGui as QtGui
@@ -36,6 +36,7 @@ from PyKDE4.kio import KFile
 
 import vlc
 from ui_capturewidget import Ui_VideoWidget
+
 
 class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
 
@@ -83,7 +84,7 @@ class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
     def take_screenshots(self):
 
         self.player.play()
-        time.sleep(1) # FIXME: Without it it doesn't work, why?
+        time.sleep(1)  # FIXME: Without it it doesn't work, why?
 
         self.player.pause()
         self.player.set_position(0)

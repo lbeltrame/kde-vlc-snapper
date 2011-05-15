@@ -17,6 +17,7 @@
 #   Free Software Foundation, Inc.,
 #   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import subprocess
 import time
 
 try:
@@ -30,6 +31,12 @@ except ImportError:
             L[i] = nm1inv * (start * (nm1 - i) + stop * i)
         return L
 
+try:
+    import lxml.etree as etree
+except ImportError:
+    from xml.etree import ElementTree as etree
+
+import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 import PyKDE4.kdeui as kdeui
 from PyKDE4.kio import KFile
@@ -50,16 +57,107 @@ class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
         self.instance = vlc.Instance()
         self.player = self.instance.media_player_new()
         self.media = None
+        self._is_dvd = False
+        self._tracks = dict()
 
         # Set parameters of the file requesters
         self.destinationRequester.setMode(KFile.Mode(KFile.Directory))
         self.sourceRequester.setMode(KFile.Mode(KFile.File))
 
         self.captureButton.clicked.connect(self.do_capture)
+        self.sourceComboBox.currentIndexChanged[QtCore.QString].connect(
+            self.toggle_boxes)
+        self.titleComboBox.currentIndexChanged[int].connect(self.scan_tracks)
+
+    def toggle_boxes(self, text):
+
+        if text == "File":
+            self.titleComboBox.setEnabled(False)
+            self.chapterComboBox.setEnabled(False)
+            self._is_dvd = False
+        elif text == "DVD":
+            self.titleComboBox.setEnabled(True)
+            self.chapterComboBox.setEnabled(True)
+            self.sourceRequester.setEnabled(False)
+            self._is_dvd = True
+            self.scan_disc()
+
+    def scan_disc(self):
+
+        self.titleComboBox.clear()
+
+        try:
+            args = ["lsdvd", "-Ox", "-c"]
+            command = subprocess.Popen(args, stdout=subprocess.PIPE)
+        except OSError:
+            self.chapterComboBox.addItem("N/A")
+            self.titleComboBox.addItem("N/A")
+
+        returncode = command.poll()
+
+        if returncode == 2:
+            self.chapterComboBox.addItem("N/A")
+            self.titleComboBox.addItem("N/A")
+            return
+
+        data = etree.parse(command.stdout)
+        data = data.getroot()
+
+        template = "Title %s"
+
+        for element in data.iter("track"):
+            track_id = element.xpath("ix")[0]
+            self._tracks[int(track_id.text)] = list()
+
+            name = template % track_id.text
+            self.titleComboBox.addItem(name)
+
+        for track in sorted(self._tracks):
+            chapters = data.xpath("//track[ix=%d]/chapter"
+                                        % track)
+            for chapter in chapters:
+                chapter_id = chapter[0].text
+                self._tracks[track].append(chapter_id)
+
+        self.scan_tracks(self.chapterComboBox.currentIndex())
+
+    def scan_tracks(self, index):
+
+        self.chapterComboBox.clear()
+
+        if index == -1:
+            index = 0
+
+        index += 1
+
+        template = "Chapter %s"
+        chapters = self._tracks[index]
+
+        for chapter in chapters:
+            name = template % chapter
+            self.chapterComboBox.addItem(name)
 
     def do_capture(self):
 
-        source = self.sourceRequester.url().toLocalFile()
+        if self._is_dvd:
+            source_url = "dvd://@{0}:{1}"
+            current_title = unicode(self.titleComboBox.currentText())
+            current_title = current_title.split(" ")[1]
+
+            current_track = unicode(self.chapterComboBox.currentText())
+            current_track = current_track.split(" ")[1]
+            source_url = source_url.format(current_title, current_track)
+        else:
+            source_url = self.sourceRequester.url()
+
+            if not source_url.isLocalFile():
+                source_url = source_url.toString()
+            else:
+                source_url = source_url.toLocalFile()
+
+            if source_url.isEmpty():
+                return
+
         destination = self.destinationRequester.url()
 
         if self.capsInput.value() == 0:
@@ -67,16 +165,13 @@ class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
 
         self.screencaps_no = self.capsInput.value()
 
-        if source.isEmpty():
-            return
-
         if destination.isEmpty():
             return
 
         self.destination = unicode(destination.toLocalFile())
-        self.media = self.instance.media_new(unicode(source))
+        self.media = self.instance.media_new(unicode(source_url))
         self.player.set_media(self.media)
-        self.media.parse()
+        #self.media.parse()
 
         self.player.set_xwindow(self.videoFrame.winId())
         self.take_screenshots()
@@ -84,7 +179,7 @@ class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
     def take_screenshots(self):
 
         self.player.play()
-        time.sleep(1)  # FIXME: Without it it doesn't work, why?
+        time.sleep(1)  # FIXME: Without it it doesn't work
 
         self.player.pause()
         self.player.set_position(0)

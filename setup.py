@@ -33,6 +33,7 @@ setup(name='kdevlcsnapper',
     install_requires=install_requires,
     entry_points={
         'console_scripts':
-            ['kdevlcsnapper=kdevlcsnapper:main']
+            ['kdevlcsnapper=kdevlcsnapper:main',
+             'read_toc=kdevlcsnapper:read_toc']
     }
 )

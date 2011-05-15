@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>448</width>
-    <height>463</height>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,35 +43,76 @@
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::ExpandingFieldsGrow</enum>
        </property>
-       <item row="0" column="0">
+       <item row="6" column="0">
         <widget class="QLabel" name="sourceLabel">
          <property name="text">
-          <string>Source file</string>
+          <string>FIle</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="KUrlRequester" name="sourceRequester"/>
-       </item>
-       <item row="2" column="0">
+       <item row="8" column="0">
         <widget class="QLabel" name="capsLabel">
          <property name="text">
           <string>Number of screencaps</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="8" column="1">
         <widget class="KIntNumInput" name="capsInput"/>
        </item>
-       <item row="4" column="0">
+       <item row="10" column="0">
         <widget class="QLabel" name="desintationLabel">
          <property name="text">
           <string>Destination directory</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="10" column="1">
         <widget class="KUrlRequester" name="destinationRequester"/>
+       </item>
+       <item row="6" column="1">
+        <widget class="KUrlRequester" name="sourceRequester"/>
+       </item>
+       <item row="1" column="1">
+        <widget class="KComboBox" name="sourceComboBox">
+         <item>
+          <property name="text">
+           <string>File</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>DVD</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Source</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="KComboBox" name="chapterComboBox"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>DVD chapter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>DVD title</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="KComboBox" name="titleComboBox"/>
        </item>
       </layout>
      </item>
@@ -96,6 +137,11 @@
    <class>KPushButton</class>
    <extends>QPushButton</extends>
    <header>kpushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>KIntNumInput</class>

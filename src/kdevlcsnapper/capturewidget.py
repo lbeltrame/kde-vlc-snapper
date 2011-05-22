@@ -103,13 +103,13 @@ class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
         data = etree.parse(command.stdout)
         data = data.getroot()
 
-        template = "Title %s"
+        template = "Title {0}"
 
         for element in data.iter("track"):
             track_id = element.xpath("ix")[0]
             self._tracks[int(track_id.text)] = list()
 
-            name = template % track_id.text
+            name = template.forma(track_id.text)
             self.titleComboBox.addItem(name)
 
         for track in sorted(self._tracks):
@@ -130,11 +130,11 @@ class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
 
         index += 1
 
-        template = "Chapter %s"
+        template = "Chapter {0}"
         chapters = self._tracks[index]
 
         for chapter in chapters:
-            name = template % chapter
+            name = template.format(chapter)
             self.chapterComboBox.addItem(name)
 
     def do_capture(self):
@@ -176,10 +176,11 @@ class CaptureWidget(QtGui.QWidget, Ui_VideoWidget):
         self.player.set_xwindow(self.videoFrame.winId())
         self.take_screenshots()
 
+
     def take_screenshots(self):
 
         self.player.play()
-        time.sleep(1)  # FIXME: Without it it doesn't work
+        time.sleep(1)  # FIXME: Port to VLC event handling
 
         self.player.pause()
         self.player.set_position(0)

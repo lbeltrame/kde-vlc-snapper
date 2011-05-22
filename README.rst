@@ -1,23 +1,38 @@
-This file requires editing
-==========================
+KDE VLC Snapper
+===============
 
-Note to the author: Please add something informative to this README *before*
-releasing your software, as `a little documentation goes a long way`_.  Both
-README.rst (this file) and NEWS.txt (release notes) will be included in your
-package metadata which gets displayed in the PyPI page for your project.
+KDE VLC Snapper is a small PyKDE4 based program to perform automated screencapping of DVD chapters or movie files.
+It is based on the VLC Python bindings.
 
-You can take a look at the README.txt of other projects, such as repoze.bfg
-(http://bfg.repoze.org/trac/browser/trunk/README.txt) for some ideas.
+Requirements
+------------
 
-.. _`a little documentation goes a long way`: http://www.martinaspeli.net/articles/a-little-documentation-goes-a-long-way
+* Python (2.6 and 2.7 should work reliably)
+* PyKDE4
+* VLC 1.1.x
+* ``dvdread`` and ``lsdvd`` (used for DVD chapter screencapping)
+* numpy (optional)
 
-Credits
+Installation
+------------
+
+Untar the archive, and run::
+
+    python setup.py install
+
+as root. Supply the ``--prefix`` option if you want to install to a specific prefix (default ``/usr/local``).
+
+Usage
+-----
+
+Simply select your media file or DVD chapter, set the number of required screencaps and the destination directory and click on *Capture*.
+
+Known issues
+------------
+
+* Some media files make the program crash (hard to debug)
+
+License
 -------
 
-- `Distribute`_
-- `Buildout`_
-- `modern-package-template`_
-
-.. _Buildout: http://www.buildout.org/
-.. _Distribute: http://pypi.python.org/pypi/distribute
-.. _`modern-package-template`: http://pypi.python.org/pypi/modern-package-template
+This program is licensed under the GNU General Public License (GPL) version 2, or at your option, any later version.

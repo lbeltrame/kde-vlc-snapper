@@ -17,7 +17,7 @@ install_requires = [
 
 setup(name='kdevlcsnapper',
     version=version,
-    description="Automated screencapping of VLC",
+    description="Automated screencapping from VLC",
     long_description=README + '\n\n' + NEWS,
     classifiers=[
       # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
